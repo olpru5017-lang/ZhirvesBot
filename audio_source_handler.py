@@ -25,8 +25,6 @@ class AudioSourceHandler:
         """
         self.ytdl_options = {
             'format': 'bestaudio/best',
-            'extractaudio': True,
-            'audioformat': 'mp3',
             'outtmpl': '%(extractor)s-%(id)s-%(title)s.%(ext)s',
             'restrictfilenames': True,
             'noplaylist': False,
@@ -37,24 +35,12 @@ class AudioSourceHandler:
             'no_warnings': True,
             'default_search': 'ytsearch5',
             'source_address': '0.0.0.0',
-            # Use only mobile clients to bypass bot detection
+            # Use android_testsuite client - most reliable for bots
             'extractor_args': {
                 'youtube': {
-                    'player_client': ['ios'],  # iOS client is most reliable
-                    'skip': ['hls', 'dash', 'translated_subs'],
-                    'player_skip': ['webpage', 'configs']
+                    'player_client': ['android_testsuite'],
+                    'skip': ['hls', 'dash']
                 }
-            },
-            # Bypass age restriction
-            'age_limit': None,
-            # Mobile iOS headers
-            'http_headers': {
-                'User-Agent': 'com.google.ios.youtube/19.09.3 (iPhone14,3; U; CPU iOS 15_6 like Mac OS X)',
-                'Accept': '*/*',
-                'Accept-Language': 'en-US,en;q=0.9',
-                'Accept-Encoding': 'gzip, deflate',
-                'X-YouTube-Client-Name': '5',
-                'X-YouTube-Client-Version': '19.09.3'
             }
         }
         
