@@ -551,6 +551,4 @@ async def setup(bot):
         bot: The MusicBot instance
     """
     await bot.add_cog(MusicCommands(bot))
-    # Sync slash commands with Discord
-    await bot.tree.sync()
-    logger.info("MusicCommands Cog loaded and slash commands synced")
+    logger.info("MusicCommands Cog loaded")

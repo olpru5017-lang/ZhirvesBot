@@ -40,6 +40,12 @@ class MusicBot(commands.Bot):
         # Load MusicCommands cog
         await self.load_extension('music_commands')
         logger.info("MusicCommands cog loaded")
+        # Sync slash commands
+        try:
+            synced = await self.tree.sync()
+            logger.info(f"Synced {len(synced)} slash command(s)")
+        except Exception as e:
+            logger.error(f"Failed to sync commands: {e}")
     
     async def on_ready(self):
         """Called when the bot is ready and connected to Discord."""
