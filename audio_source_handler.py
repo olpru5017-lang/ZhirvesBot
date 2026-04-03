@@ -36,7 +36,21 @@ class AudioSourceHandler:
             'quiet': True,
             'no_warnings': True,
             'default_search': 'ytsearch5',  # Search YouTube, return up to 5 results
-            'source_address': '0.0.0.0'
+            'source_address': '0.0.0.0',
+            # YouTube bot detection bypass
+            'extractor_args': {
+                'youtube': {
+                    'player_client': ['android', 'web'],
+                    'skip': ['hls', 'dash']
+                }
+            },
+            # Additional headers to avoid bot detection
+            'http_headers': {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                'Accept-Language': 'en-us,en;q=0.5',
+                'Sec-Fetch-Mode': 'navigate'
+            }
         }
         
         self.ffmpeg_options = {
