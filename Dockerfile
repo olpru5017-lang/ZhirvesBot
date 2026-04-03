@@ -4,6 +4,8 @@ FROM python:3.10-slim
 # Install FFmpeg and other dependencies
 RUN apt-get update && apt-get install -y \
     ffmpeg \
+    libffi-dev \
+    libsodium-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Set working directory

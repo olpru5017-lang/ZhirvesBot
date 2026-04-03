@@ -449,8 +449,8 @@ class MusicCommands(commands.Cog):
             logger.error(f"Error in clear command: {e}", exc_info=True)
             await ctx.send(f"❌ An error occurred: {str(e)}")
     
-    @commands.command(name='help')
-    async def help(self, ctx):
+    @commands.command(name='commands')
+    async def commands_list(self, ctx):
         """
         Display list of all available commands.
         
@@ -495,7 +495,7 @@ class MusicCommands(commands.Cog):
                 name="⚙️ Settings Commands",
                 value=(
                     "`/volume <0-100>` - Set playback volume\n"
-                    "`/help` - Show this help message"
+                    "`/commands` - Show this help message"
                 ),
                 inline=False
             )
