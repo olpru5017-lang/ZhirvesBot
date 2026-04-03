@@ -23,7 +23,18 @@ class AudioSourceHandler:
         
         Validates Requirements: 1.1, 2.1, 2.2, 2.3, 9.1
         """
-        self.ytdl_options = {
+        # List of clients to try in order
+        self.clients_to_try = [
+            ['android_testsuite'],
+            ['android_creator'],
+            ['android_music'],
+            ['android'],
+            ['ios'],
+            ['mweb'],
+            ['tv_embedded']
+        ]
+        
+        self.base_ytdl_options = {
             'format': 'bestaudio/best',
             'outtmpl': '%(extractor)s-%(id)s-%(title)s.%(ext)s',
             'restrictfilenames': True,
@@ -34,22 +45,57 @@ class AudioSourceHandler:
             'quiet': True,
             'no_warnings': True,
             'default_search': 'ytsearch5',
-            'source_address': '0.0.0.0',
-            # Try multiple clients with fallback
-            'extractor_args': {
-                'youtube': {
-                    'player_client': ['android_creator', 'android_testsuite', 'android', 'ios', 'mweb'],
-                    'skip': ['hls', 'dash']
-                }
-            }
+            'source_address': '0.0.0.0'
         }
         
         self.ffmpeg_options = {
             'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5',
             'options': '-vn'
         }
+    
+    def _create_ytdl_with_client(self, client):
+        """Create a YoutubeDL instance with specific client."""
+        options = self.base_ytdl_options.copy()
+        options['extractor_args'] = {
+            'youtube': {
+                'player_client': client,
+                'skip': ['hls', 'dash']
+            }
+        }
+        return yt_dlp.YoutubeDL(options)
+    
+    async def _extract_with_fallback(self, query, is_url=False):
+        """Try extracting with different clients until one works."""
+        last_error = None
         
-        self.ytdl = yt_dlp.YoutubeDL(self.ytdl_options)
+        for client in self.clients_to_try:
+            try:
+                logger.info(f"Trying client: {client[0]}")
+                ytdl = self._create_ytdl_with_client(client)
+                
+                loop = asyncio.get_event_loop()
+                data = await asyncio.wait_for(
+                    loop.run_in_executor(
+                        None,
+                        lambda: ytdl.extract_info(query, download=False)
+                    ),
+                    timeout=30.0
+                )
+                
+                if data:
+                    logger.info(f"Success with client: {client[0]}")
+                    return data
+                    
+            except Exception as e:
+                last_error = e
+                logger.warning(f"Client {client[0]} failed: {str(e)[:100]}")
+                continue
+        
+        # If all clients failed, raise the last error
+        if last_error:
+            raise last_error
+        else:
+            raise Exception("All clients failed to extract data")
     
     async def search(self, query: str, max_results: int = 5):
         """
@@ -69,15 +115,8 @@ class AudioSourceHandler:
         Validates Requirements: 1.1, 1.2, 1.4, 1.5
         """
         try:
-            # Run yt-dlp extraction in executor with 30 second timeout
-            loop = asyncio.get_event_loop()
-            data = await asyncio.wait_for(
-                loop.run_in_executor(
-                    None,
-                    lambda: self.ytdl.extract_info(f"ytsearch{max_results}:{query}", download=False)
-                ),
-                timeout=30.0
-            )
+            # Use fallback mechanism to try different clients
+            data = await self._extract_with_fallback(f"ytsearch{max_results}:{query}")
             
             if not data:
                 logger.warning(f"No results found for query: {query}")
@@ -125,15 +164,8 @@ class AudioSourceHandler:
         Validates Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 9.1, 9.2, 9.3, 9.4
         """
         try:
-            # Run yt-dlp extraction in executor with 30 second timeout
-            loop = asyncio.get_event_loop()
-            data = await asyncio.wait_for(
-                loop.run_in_executor(
-                    None,
-                    lambda: self.ytdl.extract_info(url, download=False)
-                ),
-                timeout=30.0
-            )
+            # Use fallback mechanism to try different clients
+            data = await self._extract_with_fallback(url, is_url=True)
             
             if not data:
                 logger.error(f"No data extracted from URL: {url}")
@@ -186,12 +218,8 @@ class AudioSourceHandler:
         Validates Requirements: 6.1, 6.2
         """
         try:
-            # Extract fresh stream URL (URLs expire)
-            loop = asyncio.get_event_loop()
-            data = await loop.run_in_executor(
-                None,
-                lambda: self.ytdl.extract_info(track.url, download=False)
-            )
+            # Extract fresh stream URL (URLs expire) using fallback
+            data = await self._extract_with_fallback(track.url, is_url=True)
             
             if not data:
                 raise ValueError(f"Unable to get audio source for track: {track.title}")
