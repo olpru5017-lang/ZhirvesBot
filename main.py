@@ -6,10 +6,20 @@ YouTube, SoundCloud, and direct audio links.
 """
 
 import os
+import sys
 import logging
 from dotenv import load_dotenv
 import discord
 from discord.ext import commands
+
+# Try to import PyNaCl, install if missing
+try:
+    import nacl
+except ImportError:
+    print("PyNaCl not found, installing...")
+    import subprocess
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "--upgrade", "PyNaCl"])
+    print("PyNaCl installed successfully")
 
 
 # Configure logging
