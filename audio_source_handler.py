@@ -35,20 +35,24 @@ class AudioSourceHandler:
             'logtostderr': False,
             'quiet': True,
             'no_warnings': True,
-            'default_search': 'ytsearch5',  # Search YouTube, return up to 5 results
+            'default_search': 'ytsearch5',
             'source_address': '0.0.0.0',
-            # YouTube bot detection bypass
+            # YouTube bot detection bypass - use mobile client
             'extractor_args': {
                 'youtube': {
-                    'player_client': ['android', 'web'],
-                    'skip': ['hls', 'dash']
+                    'player_client': ['android_music', 'android', 'ios', 'web'],
+                    'skip': ['hls', 'dash', 'translated_subs']
                 }
             },
-            # Additional headers to avoid bot detection
+            # Bypass age restriction and bot detection
+            'age_limit': None,
+            'cookiesfrombrowser': None,
+            # Additional headers
             'http_headers': {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'User-Agent': 'Mozilla/5.0 (Linux; Android 11; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36',
                 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
                 'Accept-Language': 'en-us,en;q=0.5',
+                'Accept-Encoding': 'gzip, deflate',
                 'Sec-Fetch-Mode': 'navigate'
             }
         }
