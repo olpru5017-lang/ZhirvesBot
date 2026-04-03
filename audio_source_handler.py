@@ -35,10 +35,10 @@ class AudioSourceHandler:
             'no_warnings': True,
             'default_search': 'ytsearch5',
             'source_address': '0.0.0.0',
-            # Use android_testsuite client - most reliable for bots
+            # Try multiple clients with fallback
             'extractor_args': {
                 'youtube': {
-                    'player_client': ['android_testsuite'],
+                    'player_client': ['android_creator', 'android_testsuite', 'android', 'ios', 'mweb'],
                     'skip': ['hls', 'dash']
                 }
             }
