@@ -66,12 +66,13 @@ class MusicCommands(commands.Cog):
             logger.info(f"Creating new MusicPlayer for guild {guild_id}")
             # Create a fake context object for MusicPlayer
             class FakeContext:
-                def __init__(self, interaction):
+                def __init__(self, interaction, bot):
                     self.guild = interaction.guild
                     self.channel = interaction.channel
                     self.send = interaction.channel.send
+                    self.bot = bot
             
-            self.bot.music_players[guild_id] = MusicPlayer(FakeContext(interaction))
+            self.bot.music_players[guild_id] = MusicPlayer(FakeContext(interaction, self.bot))
         
         return self.bot.music_players[guild_id]
     
