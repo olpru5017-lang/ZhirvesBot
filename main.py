@@ -45,7 +45,7 @@ class MusicBot(commands.Bot):
         """Called when the bot is ready and connected to Discord."""
         logger.info(f"Bot logged in as {self.user.name} (ID: {self.user.id})")
         logger.info(f"Connected to {len(self.guilds)} guilds")
-        await self.change_presence(activity=discord.Game(name="🎵 Ready to play music"))
+        await self.change_presence(activity=discord.Game(name="🎵 Готов ебашить музыку"))
 
 
 async def main():
