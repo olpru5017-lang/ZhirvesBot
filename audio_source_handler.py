@@ -37,23 +37,24 @@ class AudioSourceHandler:
             'no_warnings': True,
             'default_search': 'ytsearch5',
             'source_address': '0.0.0.0',
-            # YouTube bot detection bypass - use mobile client
+            # Use only mobile clients to bypass bot detection
             'extractor_args': {
                 'youtube': {
-                    'player_client': ['android_music', 'android', 'ios', 'web'],
-                    'skip': ['hls', 'dash', 'translated_subs']
+                    'player_client': ['ios'],  # iOS client is most reliable
+                    'skip': ['hls', 'dash', 'translated_subs'],
+                    'player_skip': ['webpage', 'configs']
                 }
             },
-            # Bypass age restriction and bot detection
+            # Bypass age restriction
             'age_limit': None,
-            'cookiesfrombrowser': None,
-            # Additional headers
+            # Mobile iOS headers
             'http_headers': {
-                'User-Agent': 'Mozilla/5.0 (Linux; Android 11; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36',
-                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-                'Accept-Language': 'en-us,en;q=0.5',
+                'User-Agent': 'com.google.ios.youtube/19.09.3 (iPhone14,3; U; CPU iOS 15_6 like Mac OS X)',
+                'Accept': '*/*',
+                'Accept-Language': 'en-US,en;q=0.9',
                 'Accept-Encoding': 'gzip, deflate',
-                'Sec-Fetch-Mode': 'navigate'
+                'X-YouTube-Client-Name': '5',
+                'X-YouTube-Client-Version': '19.09.3'
             }
         }
         
