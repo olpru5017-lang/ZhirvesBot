@@ -72,20 +72,20 @@ class AudioSourceHandler:
             list[Track]: List of Track objects (max 5 results)
         
         Raises:
-            asyncio.TimeoutError: If search takes longer than 10 seconds
+            asyncio.TimeoutError: If search takes longer than 30 seconds
             Exception: If search fails
         
         Validates Requirements: 1.1, 1.2, 1.4, 1.5
         """
         try:
-            # Run yt-dlp extraction in executor with 10 second timeout
+            # Run yt-dlp extraction in executor with 30 second timeout
             loop = asyncio.get_event_loop()
             data = await asyncio.wait_for(
                 loop.run_in_executor(
                     None,
                     lambda: self.ytdl.extract_info(f"ytsearch{max_results}:{query}", download=False)
                 ),
-                timeout=10.0
+                timeout=30.0
             )
             
             if not data:
@@ -108,8 +108,8 @@ class AudioSourceHandler:
             return tracks
             
         except asyncio.TimeoutError:
-            logger.error(f"Search timeout after 10 seconds for query: {query}")
-            raise asyncio.TimeoutError("Search took too long (>10 seconds)")
+            logger.error(f"Search timeout after 30 seconds for query: {query}")
+            raise asyncio.TimeoutError("Search took too long (>30 seconds)")
         except Exception as e:
             logger.error(f"Search error for query '{query}': {e}", exc_info=True)
             raise
@@ -128,20 +128,20 @@ class AudioSourceHandler:
             Track or list[Track]: Single Track for videos, list of Tracks for playlists
         
         Raises:
-            asyncio.TimeoutError: If extraction takes longer than 3 seconds
+            asyncio.TimeoutError: If extraction takes longer than 30 seconds
             Exception: If URL is invalid or extraction fails
         
         Validates Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 9.1, 9.2, 9.3, 9.4
         """
         try:
-            # Run yt-dlp extraction in executor with 3 second timeout
+            # Run yt-dlp extraction in executor with 30 second timeout
             loop = asyncio.get_event_loop()
             data = await asyncio.wait_for(
                 loop.run_in_executor(
                     None,
                     lambda: self.ytdl.extract_info(url, download=False)
                 ),
-                timeout=3.0
+                timeout=30.0
             )
             
             if not data:
@@ -173,8 +173,8 @@ class AudioSourceHandler:
                 return track
                 
         except asyncio.TimeoutError:
-            logger.error(f"URL extraction timeout after 3 seconds for URL: {url}")
-            raise asyncio.TimeoutError("URL extraction took too long (>3 seconds)")
+            logger.error(f"URL extraction timeout after 30 seconds for URL: {url}")
+            raise asyncio.TimeoutError("URL extraction took too long (>30 seconds)")
         except Exception as e:
             logger.error(f"Extraction error for URL '{url}': {e}", exc_info=True)
             raise
