@@ -55,6 +55,15 @@ class AudioSourceHandler:
             'geo_bypass_country': 'US'
         }
         
+        # Check if cookies file exists
+        import os
+        cookies_path = 'youtube_cookies.txt'
+        if os.path.exists(cookies_path):
+            self.base_ytdl_options['cookiefile'] = cookies_path
+            logger.info("YouTube cookies file found - using cookies for authentication")
+        else:
+            logger.warning("YouTube cookies file not found - YouTube may not work. See COOKIES_SETUP.md")
+        
         self.ffmpeg_options = {
             'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5',
             'options': '-vn'
