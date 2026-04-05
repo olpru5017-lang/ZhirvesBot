@@ -38,7 +38,7 @@ class AudioSourceHandler:
         ]
         
         self.base_ytdl_options = {
-            'format': 'bestaudio*+bestvideo/best',
+            'format': 'bestaudio/best/worst',
             'outtmpl': '%(extractor)s-%(id)s-%(title)s.%(ext)s',
             'restrictfilenames': True,
             'noplaylist': False,
@@ -53,9 +53,11 @@ class AudioSourceHandler:
             'age_limit': None,
             'geo_bypass': True,
             'geo_bypass_country': 'US',
-            # Format selection fallback
-            'format_sort': ['quality', 'res', 'fps', 'hdr:12', 'codec:vp9.2', 'size', 'br', 'asr', 'proto'],
-            'merge_output_format': 'webm/mp4/mkv'
+            # Extract audio only
+            'postprocessors': [{
+                'key': 'FFmpegExtractAudio',
+                'preferredcodec': 'best',
+            }]
         }
         
         # Check if cookies file exists
