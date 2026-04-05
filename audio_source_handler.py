@@ -38,26 +38,17 @@ class AudioSourceHandler:
         ]
         
         self.base_ytdl_options = {
-            'format': 'bestaudio/best/worst',
+            'format': 'ba/b',  # ba = best audio, b = best
             'outtmpl': '%(extractor)s-%(id)s-%(title)s.%(ext)s',
             'restrictfilenames': True,
             'noplaylist': False,
             'nocheckcertificate': True,
             'ignoreerrors': False,
             'logtostderr': False,
-            'quiet': True,
-            'no_warnings': True,
+            'quiet': False,  # Включаем логи для отладки
+            'no_warnings': False,
             'default_search': 'ytsearch5',
-            'source_address': '0.0.0.0',
-            # Additional options to bypass restrictions
-            'age_limit': None,
-            'geo_bypass': True,
-            'geo_bypass_country': 'US',
-            # Extract audio only
-            'postprocessors': [{
-                'key': 'FFmpegExtractAudio',
-                'preferredcodec': 'best',
-            }]
+            'source_address': '0.0.0.0'
         }
         
         # Check if cookies file exists
