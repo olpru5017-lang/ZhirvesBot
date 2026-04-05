@@ -28,10 +28,13 @@ class AudioSourceHandler:
             ['android_testsuite'],
             ['android_creator'],
             ['android_music'],
+            ['android_vr'],
+            ['android_producer'],
             ['android'],
             ['ios'],
             ['mweb'],
-            ['tv_embedded']
+            ['tv_embedded'],
+            ['web']
         ]
         
         self.base_ytdl_options = {
@@ -45,7 +48,11 @@ class AudioSourceHandler:
             'quiet': True,
             'no_warnings': True,
             'default_search': 'ytsearch5',
-            'source_address': '0.0.0.0'
+            'source_address': '0.0.0.0',
+            # Additional options to bypass restrictions
+            'age_limit': None,
+            'geo_bypass': True,
+            'geo_bypass_country': 'US'
         }
         
         self.ffmpeg_options = {
